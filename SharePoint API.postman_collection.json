@@ -1,0 +1,406 @@
+{
+  "info": {
+    "_postman_id": "4837c80e-9adf-424b-8825-d94fffff6256",
+    "name": "SharePoint API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "8706677",
+    "_collection_link": "https://go.postman.co/collection/8706677-4837c80e-9adf-424b-8825-d94fffff6256?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "var bodyToken = responseJson.access_token;\r",
+              "pm.collectionVariables.set(\"sp_access_token\", bodyToken)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "client_id",
+            "value": "{{sp_client_id}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "client_secret",
+            "value": "{{sp_secret_id}}",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "scope",
+            "value": "https://graph.microsoft.com/.default",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "grant_type",
+            "value": "credentials",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "client_id",
+              "value": "{{sp_client_id}}",
+              "type": "text",
+              "uuid": "0b8f35e5-bdfc-4cef-93e2-6758b785cc6c"
+            },
+            {
+              "key": "client_secret",
+              "value": "{{sp_secret_id}}",
+              "type": "text",
+              "uuid": "73d40aa7-f02c-4569-819c-d25d2eb8076c"
+            },
+            {
+              "key": "grant_type",
+              "value": "client_credentials",
+              "type": "text",
+              "uuid": "0b1babe6-242f-4806-b67f-513b715b74ff"
+            },
+            {
+              "key": "scope",
+              "value": "https://graph.microsoft.com/.default",
+              "type": "text",
+              "uuid": "84776577-8544-4080-9c1e-006a8f21b601"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://login.microsoftonline.com/{{sp_tenant_id}}/oauth2/v2.0/token",
+          "protocol": "https",
+          "host": [
+            "login",
+            "microsoftonline",
+            "com"
+          ],
+          "path": [
+            "{{sp_tenant_id}}",
+            "oauth2",
+            "v2.0",
+            "token"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Site ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "const responseJson = pm.response.json();",
+              "var bodyToken = responseJson.id;",
+              "pm.collectionVariables.set(\"sp_site_id\", bodyToken)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{sp_access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://graph.microsoft.com/v1.0/sites/abbyyglobal.sharepoint.com:/sites/SolutionConsultingDemoEnvironment",
+          "protocol": "https",
+          "host": [
+            "graph",
+            "microsoft",
+            "com"
+          ],
+          "path": [
+            "v1.0",
+            "sites",
+            "abbyyglobal.sharepoint.com:",
+            "sites",
+            "SolutionConsultingDemoEnvironment"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Drive ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseJson = pm.response.json();",
+              "var bodyToken = responseJson.id;",
+              "pm.collectionVariables.set(\"sp_drive_id\", bodyToken)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{sp_access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://graph.microsoft.com/v1.0/sites/{{sp_site_id}}/drive",
+          "protocol": "https",
+          "host": [
+            "graph",
+            "microsoft",
+            "com"
+          ],
+          "path": [
+            "v1.0",
+            "sites",
+            "{{sp_site_id}}",
+            "drive"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get List ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseJson = pm.response.json();\r",
+              "var bodyToken = responseJson.value[0].id;\r",
+              "pm.collectionVariables.set(\"sp_list_id\", bodyToken)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{sp_access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://graph.microsoft.com/v1.0/sites/{{sp_site_id}}/lists?$filter=displayName eq 'Documents'",
+          "protocol": "https",
+          "host": [
+            "graph",
+            "microsoft",
+            "com"
+          ],
+          "path": [
+            "v1.0",
+            "sites",
+            "{{sp_site_id}}",
+            "lists"
+          ],
+          "query": [
+            {
+              "key": "$filter",
+              "value": "displayName eq 'Documents'"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get List Columns",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseJson = pm.response.json();\r",
+              "var bodyToken = responseJson.value[0].id;\r",
+              "pm.collectionVariables.set(\"sp_list_id\", bodyToken)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{sp_access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://graph.microsoft.com/v1.0/sites/{{sp_site_id}}/lists/{{sp_list_id}}/columns",
+          "protocol": "https",
+          "host": [
+            "graph",
+            "microsoft",
+            "com"
+          ],
+          "path": [
+            "v1.0",
+            "sites",
+            "{{sp_site_id}}",
+            "lists",
+            "{{sp_list_id}}",
+            "columns"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Upload File",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseJson = pm.response.json();\r",
+              "var bodyToken = responseJson.id;\r",
+              "pm.collectionVariables.set(\"sp_item_id\", bodyToken)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{sp_access_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "file",
+          "file": {
+            "src": "/C:/Users/maraujo/OneDrive - ABBYY Global/Personal/Clientes/Axogen/2640_001.pdf"
+          }
+        },
+        "url": {
+          "raw": "https://graph.microsoft.com/v1.0/sites/{{sp_site_id}}/drives/{{sp_drive_id}}/root:/2640_001.pdf:/content",
+          "protocol": "https",
+          "host": [
+            "graph",
+            "microsoft",
+            "com"
+          ],
+          "path": [
+            "v1.0",
+            "sites",
+            "{{sp_site_id}}",
+            "drives",
+            "{{sp_drive_id}}",
+            "root:",
+            "2640_001.pdf:",
+            "content"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "sp_client_id",
+      "value": ""
+    },
+    {
+      "key": "sp_secret_id",
+      "value": ""
+    },
+    {
+      "key": "sp_tenant_id",
+      "value": ""
+    },
+    {
+      "key": "sp_library",
+      "value": ""
+    },
+    {
+      "key": "sp_access_token",
+      "value": ""
+    },
+    {
+      "key": "sp_site_id",
+      "value": ""
+    },
+    {
+      "key": "sp_drive_id",
+      "value": ""
+    },
+    {
+      "key": "sp_list_id",
+      "value": ""
+    },
+    {
+      "key": "sp_item_id",
+      "value": ""
+    }
+  ]
+}
